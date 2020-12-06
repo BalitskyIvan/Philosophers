@@ -12,8 +12,7 @@
 
 #include "philo.h"
 
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-void *philosopher(void *id)
+void	*philosopher(void *philo_struct)
 {
 	int *philo_id;
 	philo_id = (int *) id;
@@ -34,23 +33,17 @@ void *philosopher(void *id)
 	return NULL;
 }
 
-int	main(int argc, char **argv)
+
+void	join_threads()
 {
-	int			threads_count;
-	int 		i = 0;
-	threads_count = atoi(argv[1]);
-	pthread_t	thread_id[threads_count];
-	int			philo_id[threads_count];
 
-	printf("main\n");
+}
 
-	while (i < threads_count)
-	{
-		philo_id[i] = i;
-		pthread_create(&thread_id[i], NULL, philosopher, &philo_id[i]);
-		i++;
-	}
+int		main(int argc, char **argv)
+{
+	t_vars	philo_struct;
 
+	philo_struct = init(argc, argv);
 	i = 0;
 	while (i < threads_count)
 	{

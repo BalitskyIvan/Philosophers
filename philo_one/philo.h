@@ -18,4 +18,24 @@
 # include <pthread.h>
 # include <stdlib.h>
 
+typedef struct		s_vars
+{
+	pthread_t		*thread_id;
+	int				*philo_id;
+	pthread_mutex_t	*mutex;
+}					t_vars;
+
+typedef struct		s_philo
+{
+	int				id;
+	int				philosophers_count;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				number_of_times_each_philosopher_must_eat;
+	pthread_mutex_t	*mutex;
+}					t_philo;
+
+t_vars				init(int argc, char **argv, void *philosopher);
+
 #endif
