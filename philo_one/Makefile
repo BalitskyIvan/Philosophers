@@ -15,7 +15,11 @@ NAME = philo_one
 
 HEADER = philo.h
 
-SRCS = main.c
+SRCS = main.c \
+		initializer.c \
+		utils.c \
+		detach.c \
+		ft_itoa.c
 
 O_FILE = $(patsubst %.c,%.o,$(SRCS))
 D_FILE = $(patsubst %.c,%.d,$(SRCS))

@@ -19,16 +19,20 @@ void	*philosopher(void *philo_struct)
 	int i = 0;
 	while (1)
 	{
-		pthread_mutex_lock(&philo->mutex[philo->id]);
+
+		pthread_mutex_lock(&philo->mutex[0]);
+		// ft_putstr("philo_thread count\n");
+		ft_putstr(ft_itoa(philo->id));
+		ft_putstr("\n");
+
 		if (i >= 10000)
 		{
-			pthread_mutex_unlock(&philo->mutex[philo->id]);
-			printf("philo_thread %d count %d\n", philo->id, i);
+			pthread_mutex_unlock(&philo->mutex[0]);
+		//	ft_putstr("philo_thread count\n");
 			return NULL;
 		}
-		pthread_mutex_unlock(&philo->mutex[philo->id]);
-
 		i++;
+		pthread_mutex_unlock(&philo->mutex[0]);
 	}
 	return NULL;
 }
@@ -37,8 +41,11 @@ int		main(int argc, char **argv)
 {
 	t_vars	philo_struct;
 
+	ft_putstr("before\n");
 	philo_struct = init(argc, argv, philosopher);
-	if (philo_struct.philo_count)
+	//ft_putstr("after\n");
+
+	if (philo_struct.philo_count == -1)
 		return (0);
 	detach(&philo_struct);
 	return (0);

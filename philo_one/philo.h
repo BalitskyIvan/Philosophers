@@ -40,5 +40,6 @@ t_vars				init(int argc, char **argv, void *philosopher);
 int					ft_atoi(const char *str);
 void				ft_putstr(char *s);
 void				detach(t_vars *philo_struct);
+char				*ft_itoa(int n);
 
 #endif

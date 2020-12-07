@@ -43,7 +43,7 @@ void *philosopher, t_philo *philo_set)
 	philo_struct->thread_id = thread_id;
 }
 
-static t_philo	parse_vars(int argc, char **argv)
+static int	parse_vars(int argc, char **argv, void *philosopher, t_vars *philo_struct)
 {
 	t_philo philo;
 
@@ -59,26 +59,20 @@ static t_philo	parse_vars(int argc, char **argv)
 			philo.number_must_eat = ft_atoi(argv[5]);
 		else
 			philo.number_must_eat = -1;
+		init_mutex(philo.philosophers_count, philo.mutex);
+		init_philosophers(philo.philosophers_count, philo_struct, philosopher, &philo);
+		return(philo.philosophers_count);
 	}
 	else
 		ft_putstr("Wrong number of arguments, sorry :(\n");
-	return (philo);
+	return (-1);
 }
 
 t_vars	init(int argc, char **argv, void *philosopher)
 {
 	t_vars	philo_struct;
-	t_philo	philo;
 
-	philo = parse_vars(argc, argv);
-	if (philo.id == -1)
-	{
-		philo_struct.philo_count = -1;
-		return (philo_struct);
-	}
-	else
-		philo_struct.philo_count = philo.philosophers_count;
-	init_mutex(philo.philosophers_count, philo.mutex);
-	init_philosophers(philo.philosophers_count, &philo_struct, philosopher, &philo);
+	philo_struct.philo_count = parse_vars(argc, argv, philosopher, &philo_struct);
+	ft_putstr("init succes\n");
 	return (philo_struct);
 }
