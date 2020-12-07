@@ -21,8 +21,8 @@
 typedef struct		s_vars
 {
 	pthread_t		*thread_id;
-	int				*philo_id;
 	pthread_mutex_t	*mutex;
+	int				philo_count;
 }					t_vars;
 
 typedef struct		s_philo
@@ -32,10 +32,13 @@ typedef struct		s_philo
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
-	int				number_of_times_each_philosopher_must_eat;
+	int				number_must_eat;
 	pthread_mutex_t	*mutex;
 }					t_philo;
 
 t_vars				init(int argc, char **argv, void *philosopher);
+int					ft_atoi(const char *str);
+void				ft_putstr(char *s);
+void				detach(t_vars *philo_struct);
 
 #endif
