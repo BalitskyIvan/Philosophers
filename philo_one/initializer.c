@@ -12,17 +12,18 @@
 
 #include "philo.h"
 
-static void	init_mutex(int philosophers_count, pthread_mutex_t *mutex_dst)
+static pthread_mutex_t	*init_mutex(int philosophers_count)
 {
 	int i;
-
+	pthread_mutex_t	*mutex;
 	i = 0;
-	mutex_dst = malloc(sizeof(pthread_mutex_t) * philosophers_count);
+	mutex = malloc(sizeof(pthread_mutex_t) * philosophers_count);
 	while (i < philosophers_count)
 	{
-		pthread_mutex_init(&mutex_dst[i], NULL);
+		pthread_mutex_init(&mutex[i], NULL);
 		i++;
 	}
+	return (mutex);
 }
 
 static void	init_philosophers(int philosophers_count, t_vars *philo_struct,
@@ -56,8 +57,8 @@ static int	parse_vars(int argc, char **argv, void *philosopher, t_vars *philo_st
 		if (argc == 6)
 			philo.number_must_eat = ft_atoi(argv[5]);
 		else
-			philo.number_must_eat = -1;
-		init_mutex(philo.philosophers_count, philo.mutex);
+			philo.number_must_eat = -1; 
+		philo.mutex = init_mutex(philo.philosophers_count);
 		init_philosophers(philo.philosophers_count, philo_struct, philosopher, philo);
 		return(philo.philosophers_count);
 	}

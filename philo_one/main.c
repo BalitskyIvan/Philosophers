@@ -11,29 +11,22 @@
 /* ************************************************************************** */
 
 #include "philo.h"
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 void	*philosopher(void *philo_struct)
 {
-	t_philo *philo;
+	t_philo			*philo;
+
 	philo = (t_philo *) philo_struct;
-	int i = 0;
 	while (1)
 	{
-
-		pthread_mutex_lock(&mutex);
-		// ft_putstr("philo_thread count\n");
-		
-		if (i >= 10000)
-		{
-			ft_putstr(ft_itoa(philo->id));
-			ft_putstr("\n");
-			pthread_mutex_unlock(&mutex);
-		//	pthread_mutex_unlock(&philo->mutex[0]);
-		//	ft_putstr("philo_thread count\n");
-			return NULL;
-		}
-		i++;
-		pthread_mutex_unlock(&mutex);
+		//usleep()
+		pthread_mutex_lock(&philo->mutex[philo->id]);
+		ft_putstr(ft_itoa(philo->id));
+		ft_putstr(" diff ");
+		ft_putstr(ft_itoa(get_time_diff(philo->started)));
+		ft_putstr("\n");
+		pthread_mutex_unlock(&philo->mutex[philo->id]);
+		pthread_mutex_unlock(&philo->mutex[philo->id]);
 	}
 	return NULL;
 }

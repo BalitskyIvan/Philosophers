@@ -12,6 +12,7 @@
 
 #include "philo.h"
 
+
 static int		n_size(int n, int isminus)
 {
 	int i;

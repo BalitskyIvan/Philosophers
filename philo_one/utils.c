@@ -53,7 +53,17 @@ t_philo		*philo_dup(t_philo philo_struct, int id)
 	new->time_to_die = philo_struct.time_to_die;
 	new->time_to_eat = philo_struct.time_to_eat;
 	new->time_to_sleep = philo_struct.time_to_sleep;
+	gettimeofday(&new->last_eat, NULL);
+	gettimeofday(&new->started, NULL);
 	return (new);
+}
+
+long			get_time_diff(struct timeval start)
+{
+	struct timeval now;
+
+	gettimeofday(&now, NULL);
+	return (now.tv_sec - start.tv_sec);
 }
 
 int			ft_atoi(const char *str)

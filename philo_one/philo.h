@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <pthread.h>
 # include <stdlib.h>
+# include <sys/time.h>
 
 typedef struct		s_vars
 {
@@ -33,6 +34,8 @@ typedef struct		s_philo
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				number_must_eat;
+	struct timeval	started;
+	struct timeval	last_eat;
 	pthread_mutex_t	*mutex;
 }					t_philo;
 
@@ -42,5 +45,6 @@ void				ft_putstr(char *s);
 void				detach(t_vars *philo_struct);
 char				*ft_itoa(int n);
 t_philo				*philo_dup(t_philo philo_struct, int id);
+long				get_time_diff(struct timeval start);
 
 #endif
