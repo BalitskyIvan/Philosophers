@@ -15,29 +15,27 @@
 static void	init_mutex(int philosophers_count, pthread_mutex_t *mutex_dst)
 {
 	int i;
-	pthread_mutex_t	mutex[philosophers_count];
 
 	i = 0;
+	mutex_dst = malloc(sizeof(pthread_mutex_t) * philosophers_count);
 	while (i < philosophers_count)
 	{
-		pthread_mutex_init(&mutex[i], NULL);
+		pthread_mutex_init(&mutex_dst[i], NULL);
 		i++;
 	}
-	mutex_dst = mutex;
 }
 
 static void	init_philosophers(int philosophers_count, t_vars *philo_struct,
-void *philosopher, t_philo *philo_set)
+void *philosopher, t_philo philo_set)
 {
 	int				i;
 	pthread_t		thread_id[philosophers_count];
-	t_philo			*philo[philosophers_count];
+	t_philo			*philo;
 
 	while (i < philosophers_count)
 	{
-		philo[i] = philo_set;
-		philo[i]->id = i;
-		pthread_create(&thread_id[i], NULL, philosopher, philo[i]);
+		philo = philo_dup(philo_set, i);
+		pthread_create(&thread_id[i], NULL, philosopher, philo);
 		i++;
 	}
 	philo_struct->thread_id = thread_id;
@@ -60,7 +58,7 @@ static int	parse_vars(int argc, char **argv, void *philosopher, t_vars *philo_st
 		else
 			philo.number_must_eat = -1;
 		init_mutex(philo.philosophers_count, philo.mutex);
-		init_philosophers(philo.philosophers_count, philo_struct, philosopher, &philo);
+		init_philosophers(philo.philosophers_count, philo_struct, philosopher, philo);
 		return(philo.philosophers_count);
 	}
 	else

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "philo.h"
-
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 void	*philosopher(void *philo_struct)
 {
 	t_philo *philo;
@@ -20,19 +20,20 @@ void	*philosopher(void *philo_struct)
 	while (1)
 	{
 
-		pthread_mutex_lock(&philo->mutex[0]);
+		pthread_mutex_lock(&mutex);
 		// ft_putstr("philo_thread count\n");
-		ft_putstr(ft_itoa(philo->id));
-		ft_putstr("\n");
-
+		
 		if (i >= 10000)
 		{
-			pthread_mutex_unlock(&philo->mutex[0]);
+			ft_putstr(ft_itoa(philo->id));
+			ft_putstr("\n");
+			pthread_mutex_unlock(&mutex);
+		//	pthread_mutex_unlock(&philo->mutex[0]);
 		//	ft_putstr("philo_thread count\n");
 			return NULL;
 		}
 		i++;
-		pthread_mutex_unlock(&philo->mutex[0]);
+		pthread_mutex_unlock(&mutex);
 	}
 	return NULL;
 }

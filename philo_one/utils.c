@@ -41,6 +41,21 @@ static int	to_skip_symbols(const char *str)
 	return (i);
 }
 
+t_philo		*philo_dup(t_philo philo_struct, int id)
+{
+	t_philo	*new;
+
+	new = malloc(sizeof(t_philo));
+	new->id = id;
+	new->mutex = philo_struct.mutex;
+	new->number_must_eat = philo_struct.number_must_eat;
+	new->philosophers_count = philo_struct.philosophers_count;
+	new->time_to_die = philo_struct.time_to_die;
+	new->time_to_eat = philo_struct.time_to_eat;
+	new->time_to_sleep = philo_struct.time_to_sleep;
+	return (new);
+}
+
 int			ft_atoi(const char *str)
 {
 	int		res;

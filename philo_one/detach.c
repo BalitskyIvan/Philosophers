@@ -20,7 +20,7 @@ void	detach(t_vars *philo_struct)
 	while (i < philo_struct->philo_count)
 	{
 		pthread_join(philo_struct->thread_id[i], NULL);
-		pthread_mutex_destroy(&philo_struct->mutex[i]);
+		//pthread_mutex_destroy(&philo_struct->mutex[i]);
 		i++;
 	}
 }

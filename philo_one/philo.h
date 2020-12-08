@@ -41,5 +41,6 @@ int					ft_atoi(const char *str);
 void				ft_putstr(char *s);
 void				detach(t_vars *philo_struct);
 char				*ft_itoa(int n);
+t_philo				*philo_dup(t_philo philo_struct, int id);
 
 #endif
