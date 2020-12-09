@@ -16,9 +16,10 @@ static pthread_mutex_t	*init_mutex(int philosophers_count)
 {
 	int i;
 	pthread_mutex_t	*mutex;
+
 	i = 0;
-	mutex = malloc(sizeof(pthread_mutex_t) * philosophers_count);
-	while (i < philosophers_count)
+	mutex = malloc(sizeof(pthread_mutex_t) * (philosophers_count + 1));
+	while (i <= philosophers_count)
 	{
 		pthread_mutex_init(&mutex[i], NULL);
 		i++;
@@ -33,6 +34,7 @@ void *philosopher, t_philo philo_set)
 	pthread_t		thread_id[philosophers_count];
 	t_philo			*philo;
 
+	i = 0;
 	while (i < philosophers_count)
 	{
 		philo = philo_dup(philo_set, i);
@@ -46,7 +48,6 @@ static int	parse_vars(int argc, char **argv, void *philosopher, t_vars *philo_st
 {
 	t_philo philo;
 
-	philo.id = -1;
 	if (argc == 5 || argc == 6)
 	{
 		philo.id = 0;

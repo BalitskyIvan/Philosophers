@@ -26,6 +26,12 @@ typedef struct		s_vars
 	int				philo_count;
 }					t_vars;
 
+typedef struct		s_forks
+{
+	int				first;
+	int				second;
+}					t_forks;
+
 typedef struct		s_philo
 {
 	int				id;
@@ -46,5 +52,8 @@ void				detach(t_vars *philo_struct);
 char				*ft_itoa(int n);
 t_philo				*philo_dup(t_philo philo_struct, int id);
 long				get_time_diff(struct timeval start);
+t_forks				get_mutex_id(int id, int philosophers_count);
+void				print_log(pthread_mutex_t *mutex, int philo_id, char *msg);
+void				sleep_for(long on_time);
 
 #endif
