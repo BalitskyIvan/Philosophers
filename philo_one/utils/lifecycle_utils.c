@@ -12,14 +12,17 @@
 
 #include "../philo.h"
 
-void		print_log(pthread_mutex_t *mutex, int philo_id, char *msg)
+void		print_log(pthread_mutex_t *mutex, int philo_id, char *msg, t_philo *philo)
 {
 	pthread_mutex_lock(mutex);
-	ft_putstr("Философ ");
-	ft_putstr(ft_itoa(philo_id + 1));
-	ft_putstr(" ");
-	ft_putstr(msg);
-	ft_putstr("\n");
+	if (!philo->vars->death)
+	{
+		ft_putstr("Философ ");
+		ft_putstr(ft_itoa(philo_id + 1));
+		ft_putstr(" ");
+		ft_putstr(msg);
+		ft_putstr("\n");
+	}
 	pthread_mutex_unlock(mutex);
 }
 
@@ -28,7 +31,7 @@ long	get_time_diff(struct timeval start)
 	struct timeval now;
 
 	gettimeofday(&now, NULL);
-	return (now.tv_sec - start.tv_sec);
+	return ((now.tv_sec - start.tv_sec) * 1000 + (now.tv_usec - start.tv_usec) / 1000);
 }
 
 void		sleep_for(long on_time)
@@ -36,7 +39,7 @@ void		sleep_for(long on_time)
 	struct timeval start;
 
 	gettimeofday(&start, NULL);
-	while (get_time_diff(start) * 1000 < on_time);
+	while (get_time_diff(start) < on_time);
 }
 
 t_forks		get_mutex_id(int id, int philosophers_count)

@@ -41,12 +41,13 @@ static int	to_skip_symbols(const char *str)
 	return (i);
 }
 
-t_philo		*philo_dup(t_philo philo_struct, int id)
+t_philo		*philo_dup(t_philo philo_struct, int id, t_vars *vars)
 {
 	t_philo	*new;
 
 	new = malloc(sizeof(t_philo));
 	new->id = id;
+	new->vars = vars;
 	new->mutex = philo_struct.mutex;
 	new->number_must_eat = philo_struct.number_must_eat;
 	new->philosophers_count = philo_struct.philosophers_count;
@@ -54,7 +55,6 @@ t_philo		*philo_dup(t_philo philo_struct, int id)
 	new->time_to_eat = philo_struct.time_to_eat;
 	new->time_to_sleep = philo_struct.time_to_sleep;
 	gettimeofday(&new->last_eat, NULL);
-	gettimeofday(&new->started, NULL);
 	return (new);
 }
 

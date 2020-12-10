@@ -19,7 +19,8 @@ SRCS = main.c \
 		./utils/utils.c \
 		./utils/detach.c \
 		./utils/ft_itoa.c \
-		./utils/lifecycle_utils.c
+		./utils/lifecycle_utils.c \
+		./utils/lifecycle.c
 
 O_FILE = $(patsubst %.c,%.o,$(SRCS))
 D_FILE = $(patsubst %.c,%.d,$(SRCS))
