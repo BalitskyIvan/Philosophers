@@ -26,7 +26,7 @@ O_FILE = $(patsubst %.c,%.o,$(SRCS))
 D_FILE = $(patsubst %.c,%.d,$(SRCS))
 
 
-FLAGS =# -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
 

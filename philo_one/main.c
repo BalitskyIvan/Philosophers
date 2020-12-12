@@ -12,34 +12,21 @@
 
 #include "philo.h"
 
-// void	*put_status(void *philo_struct)
-// {
-// 	t_philo			*philo;
-
-// 	philo = (t_philo *) philo_struct;
-// 	while (!philo->vars->death)
-// 	{
-// 		if (philo)
-// 		{
-			
-// 		}
-// 	}
-// 	return (NULL);
-// }
-
 void	*death_catcher(void *philo_struct)
 {
 	t_philo			*philo;
 	int				i;
 
 	i = 0;
-	philo = (t_philo *) philo_struct;
+	philo = (t_philo *)philo_struct;
 	while (!philo->vars->death)
 	{
-		if (get_time_diff(philo->last_eat) > philo->time_to_die)
+		if (get_time_diff(philo->last_eat, &philo->vars->get_time_mutex) >
+		philo->time_to_die || philo->eat_num == philo->number_must_eat)
 		{
 			if (!philo->vars->death)
-				print_log(&philo->mutex[philo->philosophers_count], philo->id, "помер :(", philo);
+				print_log(&philo->mutex[philo->philosophers_count],
+				philo->id, "помер :(", philo);
 			philo->vars->death = 1;
 			while (i < philo->philosophers_count)
 			{
@@ -56,12 +43,10 @@ void	*philosopher(void *philo_struct)
 	t_philo			*philo;
 	t_forks			forks;
 	pthread_t		death_thread;
-	pthread_t		put_status_thread;
 
-	philo = (t_philo *) philo_struct;
+	philo = (t_philo *)philo_struct;
 	forks = get_mutex_id(philo->id, philo->philosophers_count);
 	pthread_create(&death_thread, NULL, death_catcher, philo);
-	//pthread_create(&put_status_thread, NULL, put_status, philo);
 	while (1)
 	{
 		if (thinking_move(philo))
@@ -76,8 +61,7 @@ void	*philosopher(void *philo_struct)
 			break ;
 	}
 	pthread_join(death_thread, NULL);
-//	pthread_join(put_status_thread, NULL);
-	return NULL;
+	return (NULL);
 }
 
 int		main(int argc, char **argv)

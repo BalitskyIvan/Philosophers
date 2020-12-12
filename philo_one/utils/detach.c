@@ -12,7 +12,7 @@
 
 #include "../philo.h"
 
-void	detach(t_vars *philo_struct)
+static void	detach_threads(t_vars *philo_struct)
 {
 	int	i;
 
@@ -20,7 +20,27 @@ void	detach(t_vars *philo_struct)
 	while (i < philo_struct->philo_count)
 	{
 		pthread_join(philo_struct->thread_id[i], NULL);
-		//pthread_mutex_destroy(&philo_struct->mutex[i]);
 		i++;
 	}
+	free(philo_struct->thread_id);
+}
+
+static void	detach_mutex(t_vars *philo_struct)
+{
+	int	i;
+
+	pthread_mutex_destroy(&philo_struct->get_time_mutex);
+	i = 0;
+	while (i <= philo_struct->philo_count)
+	{
+		pthread_mutex_destroy(&philo_struct->mutex[i]);
+		i++;
+	}
+	free(philo_struct->mutex);
+}
+
+void		detach(t_vars *philo_struct)
+{
+	detach_threads(philo_struct);
+	detach_mutex(philo_struct);
 }

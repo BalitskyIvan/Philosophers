@@ -14,7 +14,7 @@
 
 static pthread_mutex_t	*init_mutex(int philosophers_count)
 {
-	int i;
+	int				i;
 	pthread_mutex_t	*mutex;
 
 	i = 0;
@@ -27,12 +27,11 @@ static pthread_mutex_t	*init_mutex(int philosophers_count)
 	return (mutex);
 }
 
-static void	init_philosophers(int philosophers_count, t_vars *philo_struct,
-void *philosopher, t_philo philo_set)
+static void				init_philosophers(int philosophers_count,
+t_vars *philo_struct, void *philosopher, t_philo philo_set)
 {
 	int				i;
 	t_philo			*philo;
-	int				*death;
 
 	i = 0;
 	philo_struct->death = 0;
@@ -45,7 +44,8 @@ void *philosopher, t_philo philo_set)
 	}
 }
 
-static int	parse_vars(int argc, char **argv, void *philosopher, t_vars *philo_struct)
+static int				parse_vars(int argc, char **argv, void *philosopher,
+t_vars *philo_struct)
 {
 	t_philo philo;
 
@@ -60,19 +60,24 @@ static int	parse_vars(int argc, char **argv, void *philosopher, t_vars *philo_st
 			philo.number_must_eat = ft_atoi(argv[5]);
 		else
 			philo.number_must_eat = -1;
+		philo.eat_num = 0;
+		pthread_mutex_init(&philo_struct->get_time_mutex, NULL);
 		philo.mutex = init_mutex(philo.philosophers_count);
-		init_philosophers(philo.philosophers_count, philo_struct, philosopher, philo);
-		return(philo.philosophers_count);
+		philo_struct->mutex = philo.mutex;
+		init_philosophers(philo.philosophers_count, philo_struct,
+		philosopher, philo);
+		return (philo.philosophers_count);
 	}
 	else
 		ft_putstr("Wrong number of arguments, sorry :(\n");
 	return (-1);
 }
 
-t_vars	init(int argc, char **argv, void *philosopher)
+t_vars					init(int argc, char **argv, void *philosopher)
 {
 	t_vars	philo_struct;
 
-	philo_struct.philo_count = parse_vars(argc, argv, philosopher, &philo_struct);
+	philo_struct.philo_count = parse_vars(argc, argv, philosopher,
+	&philo_struct);
 	return (philo_struct);
 }
