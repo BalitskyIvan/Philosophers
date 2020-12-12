@@ -42,6 +42,7 @@ typedef struct		s_philo
 	long			time_to_eat;
 	long			time_to_sleep;
 	int				number_must_eat;
+	int				status_id;
 	t_vars			*vars;
 	struct timeval	last_eat;
 	pthread_mutex_t	*mutex;

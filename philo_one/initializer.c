@@ -74,6 +74,5 @@ t_vars	init(int argc, char **argv, void *philosopher)
 	t_vars	philo_struct;
 
 	philo_struct.philo_count = parse_vars(argc, argv, philosopher, &philo_struct);
-	ft_putstr("init succes\n");
 	return (philo_struct);
 }

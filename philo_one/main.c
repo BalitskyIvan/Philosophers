@@ -12,6 +12,21 @@
 
 #include "philo.h"
 
+// void	*put_status(void *philo_struct)
+// {
+// 	t_philo			*philo;
+
+// 	philo = (t_philo *) philo_struct;
+// 	while (!philo->vars->death)
+// 	{
+// 		if (philo)
+// 		{
+			
+// 		}
+// 	}
+// 	return (NULL);
+// }
+
 void	*death_catcher(void *philo_struct)
 {
 	t_philo			*philo;
@@ -41,10 +56,12 @@ void	*philosopher(void *philo_struct)
 	t_philo			*philo;
 	t_forks			forks;
 	pthread_t		death_thread;
+	pthread_t		put_status_thread;
 
 	philo = (t_philo *) philo_struct;
 	forks = get_mutex_id(philo->id, philo->philosophers_count);
 	pthread_create(&death_thread, NULL, death_catcher, philo);
+	//pthread_create(&put_status_thread, NULL, put_status, philo);
 	while (1)
 	{
 		if (thinking_move(philo))
@@ -59,6 +76,7 @@ void	*philosopher(void *philo_struct)
 			break ;
 	}
 	pthread_join(death_thread, NULL);
+//	pthread_join(put_status_thread, NULL);
 	return NULL;
 }
 
