@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <pthread.h>
+# include <semaphore.h>
 # include <stdlib.h>
 # include <sys/time.h>
 
@@ -29,18 +30,14 @@
 typedef struct		s_vars
 {
 	pthread_t		*thread_id;
-	pthread_mutex_t	*mutex;
-	pthread_mutex_t	get_time_mutex;
+	sem_t			*semaphore;
+	sem_t			*waiter;
+	sem_t			*time_lock;
+	sem_t			*write_lock;
 	int				philo_count;
 	int				death;
 	int				is_death_printed;
 }					t_vars;
-
-typedef struct		s_forks
-{
-	int				first;
-	int				second;
-}					t_forks;
 
 typedef struct		s_philo
 {
@@ -54,8 +51,9 @@ typedef struct		s_philo
 	t_vars			*vars;
 	struct timeval	last_eat;
 	struct timeval	started_at;
-	pthread_mutex_t	eat_lock;
-	pthread_mutex_t	*mutex;
+	sem_t			*semaphore;
+	sem_t			*waiter;
+	sem_t			*eat_lock;
 }					t_philo;
 
 t_vars				init(int argc, char **argv, void *philosopher);
@@ -64,14 +62,13 @@ void				ft_putstr(char *s);
 void				detach(t_vars *philo_struct);
 char				*ft_itoa(long n);
 t_philo				*philo_dup(t_philo philo_struct, int id, t_vars *vars);
-long				get_time_diff(struct timeval start, pthread_mutex_t *mutex);
-t_forks				get_mutex_id(int id, int philosophers_count);
-void				sleep_for(long on_time, pthread_mutex_t *mutex);
+long				get_time_diff(struct timeval start, sem_t *mutex);
+void				sleep_for(long on_time, sem_t *mutex);
 int					sleeping_move(t_philo *philo);
-int					eating_move(t_philo *philo, t_forks forks);
-int					fork_move(t_philo *philo, int fork_id, int is_first_fork);
+int					eating_move(t_philo *philo);
+int					fork_move(t_philo *philo, int is_first_fork);
 int					thinking_move(t_philo *philo);
-void				print_log(pthread_mutex_t *mutex, char *color, char *msg,
+void				print_log(sem_t *mutex, char *color, char *msg,
 t_philo *philo);
 
 #endif

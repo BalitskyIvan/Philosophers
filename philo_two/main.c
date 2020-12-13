@@ -21,20 +21,21 @@ void	*death_catcher(void *philo_struct)
 	philo = (t_philo *)philo_struct;
 	while (!philo->vars->death)
 	{
-		pthread_mutex_lock(&philo->eat_lock);
-		if (get_time_diff(philo->last_eat, &philo->vars->get_time_mutex) >
+		sem_wait(philo->eat_lock);
+		if (get_time_diff(philo->last_eat, philo->vars->time_lock) >
 		philo->time_to_die || philo->eat_num == philo->number_must_eat)
 		{
 			philo->vars->death = 1;
-			print_log(&philo->mutex[philo->philosophers_count],
+			print_log(philo->vars->write_lock,
 				RED, "died", philo);
 			while (i < philo->philosophers_count)
 			{
-				pthread_mutex_unlock(&philo->mutex[i]);
+				sem_post(philo->waiter);
+				sem_post(philo->semaphore);
 				i++;
 			}
 		}
-		pthread_mutex_unlock(&philo->eat_lock);
+		sem_post(philo->eat_lock);
 	}
 	return (NULL);
 }
@@ -42,27 +43,26 @@ void	*death_catcher(void *philo_struct)
 void	*philosopher(void *philo_struct)
 {
 	t_philo			*philo;
-	t_forks			forks;
 	pthread_t		death_thread;
 
 	philo = (t_philo *)philo_struct;
-	forks = get_mutex_id(philo->id, philo->philosophers_count);
 	pthread_create(&death_thread, NULL, death_catcher, philo);
 	while (1)
 	{
 		if (thinking_move(philo))
 			break ;
-		if (fork_move(philo, forks.first, 1))
+		if (fork_move(philo, 1))
 			break ;
-		if (fork_move(philo, forks.second, 0))
+		if (fork_move(philo, 0))
 			break ;
-		if (eating_move(philo, forks))
+		if (eating_move(philo))
 			break ;
 		if (sleeping_move(philo))
 			break ;
 	}
 	pthread_join(death_thread, NULL);
-	pthread_mutex_destroy(&philo->eat_lock);
+	sem_close(philo->eat_lock);
+	sem_unlink(ft_itoa(philo->id));
 	return (NULL);
 }
 

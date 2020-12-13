@@ -12,16 +12,16 @@
 
 #include "../philo.h"
 
-void		print_log(pthread_mutex_t *mutex, char *color,
+void		print_log(sem_t *write_lock, char *color,
 char *msg, t_philo *philo)
 {
 	char	*id;
 	char	*timestamp_s;
 
 	timestamp_s = ft_itoa(get_time_diff(philo->started_at,
-	&philo->vars->get_time_mutex));
+	philo->vars->time_lock));
 	id = ft_itoa(philo->id + 1);
-	pthread_mutex_lock(mutex);
+	sem_wait(write_lock);
 	if (!philo->vars->death || (msg[0] == 'd' &&
 	!philo->vars->is_death_printed))
 	{
@@ -39,51 +39,27 @@ char *msg, t_philo *philo)
 		ft_putstr(RESET);
 		ft_putstr("\n");
 	}
-	pthread_mutex_unlock(mutex);
+	sem_post(write_lock);
 }
 
-long		get_time_diff(struct timeval start, pthread_mutex_t *mutex)
+long		get_time_diff(struct timeval start, sem_t *time_lock)
 {
 	struct timeval now;
 
-	pthread_mutex_lock(mutex);
+	sem_wait(time_lock);
 	gettimeofday(&now, NULL);
-	pthread_mutex_unlock(mutex);
+	sem_post(time_lock);
 	return (((now.tv_sec - start.tv_sec) * 1000) +
 	((now.tv_usec - start.tv_usec) * 0.001));
 }
 
-void		sleep_for(long on_time, pthread_mutex_t *mutex)
+void		sleep_for(long on_time, sem_t *time_lock)
 {
 	struct timeval start;
 
-	pthread_mutex_lock(mutex);
+	sem_wait(time_lock);
 	gettimeofday(&start, NULL);
-	pthread_mutex_unlock(mutex);
-	while (get_time_diff(start, mutex) < on_time)
+	sem_post(time_lock);
+	while (get_time_diff(start, time_lock) < on_time)
 		usleep(8);
-}
-
-t_forks		get_mutex_id(int id, int philosophers_count)
-{
-	t_forks forks;
-
-	id++;
-	if (id % 2 == 0)
-	{
-		if (id == philosophers_count)
-			forks.first = 0;
-		else
-			forks.first = id;
-		forks.second = id - 1;
-	}
-	else
-	{
-		forks.first = id - 1;
-		if (id == philosophers_count)
-			forks.second = 0;
-		else
-			forks.second = id;
-	}
-	return (forks);
 }

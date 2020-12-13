@@ -48,16 +48,18 @@ t_philo		*philo_dup(t_philo philo_struct, int id, t_vars *vars)
 	new = malloc(sizeof(t_philo));
 	new->id = id;
 	new->vars = vars;
-	new->mutex = philo_struct.mutex;
 	new->eat_num = 0;
+	new->waiter = vars->waiter;
+	new->semaphore = vars->semaphore;
 	new->number_must_eat = philo_struct.number_must_eat;
 	new->philosophers_count = philo_struct.philosophers_count;
 	new->time_to_die = philo_struct.time_to_die;
 	new->time_to_eat = philo_struct.time_to_eat;
 	new->time_to_sleep = philo_struct.time_to_sleep;
-	pthread_mutex_init(&new->eat_lock, NULL);
 	gettimeofday(&new->started_at, NULL);
 	gettimeofday(&new->last_eat, NULL);
+	sem_unlink(ft_itoa(id));
+	new->eat_lock = sem_open(ft_itoa(id), O_CREAT, 0660, 1);
 	return (new);
 }
 

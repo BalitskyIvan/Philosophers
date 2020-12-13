@@ -12,22 +12,19 @@
 
 #include "philo.h"
 
-static pthread_mutex_t	*init_mutex(int philosophers_count)
+static void	init_semaphore(int philosophers_count, t_vars *vars)
 {
-	int				i;
-	pthread_mutex_t	*mutex;
-
-	i = 0;
-	mutex = malloc(sizeof(pthread_mutex_t) * (philosophers_count + 1));
-	while (i <= philosophers_count)
-	{
-		pthread_mutex_init(&mutex[i], NULL);
-		i++;
-	}
-	return (mutex);
+	sem_unlink("semaphore");
+	sem_unlink("waiter");
+	sem_unlink("time_lock");
+	sem_unlink("write_lock");
+	vars->semaphore = sem_open("semaphore", O_CREAT, 0660, philosophers_count);
+	vars->waiter = sem_open("waiter", O_CREAT, 0660, 1);
+	vars->time_lock = sem_open("time_lock", O_CREAT, 0660, 1);
+	vars->write_lock = sem_open("write_lock", O_CREAT, 0660, 1);
 }
 
-static void				init_philosophers(int philosophers_count,
+static void	init_philosophers(int philosophers_count,
 t_vars *philo_struct, void *philosopher, t_philo philo_set)
 {
 	int				i;
@@ -45,7 +42,7 @@ t_vars *philo_struct, void *philosopher, t_philo philo_set)
 	}
 }
 
-static int				parse_vars(int argc, char **argv, void *philosopher,
+static int	parse_vars(int argc, char **argv, void *philosopher,
 t_vars *philo_struct)
 {
 	t_philo philo;
@@ -62,9 +59,7 @@ t_vars *philo_struct)
 		else
 			philo.number_must_eat = -1;
 		philo.eat_num = 0;
-		pthread_mutex_init(&philo_struct->get_time_mutex, NULL);
-		philo.mutex = init_mutex(philo.philosophers_count);
-		philo_struct->mutex = philo.mutex;
+		init_semaphore(philo.philosophers_count, philo_struct);
 		init_philosophers(philo.philosophers_count, philo_struct,
 		philosopher, philo);
 		return (philo.philosophers_count);
@@ -74,7 +69,7 @@ t_vars *philo_struct)
 	return (-1);
 }
 
-t_vars					init(int argc, char **argv, void *philosopher)
+t_vars		init(int argc, char **argv, void *philosopher)
 {
 	t_vars	philo_struct;
 
