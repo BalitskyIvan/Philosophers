@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void	*death_catcher(void *philo_struct)
+void		*death_catcher(void *philo_struct)
 {
 	t_philo			*philo;
 	int				i;
@@ -62,8 +62,7 @@ static void	philosopher_process(t_philo *philo)
 	exit(0);
 }
 
-
-int		main(int argc, char **argv)
+int			main(int argc, char **argv)
 {
 	t_vars	philo_struct;
 	int		i;
@@ -79,7 +78,6 @@ int		main(int argc, char **argv)
 		i++;
 	}
 	wait_process_end(&philo_struct);
-	sem_post(philo_struct.write_lock);
 	detach(&philo_struct);
 	return (0);
 }

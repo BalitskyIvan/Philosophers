@@ -22,8 +22,7 @@ char *msg, t_philo *philo)
 	philo->time_lock));
 	id = ft_itoa(philo->id + 1);
 	sem_wait(write_lock);
-	if (!philo->death || (msg[0] == 'd' &&
-	!philo->death_printed))
+	if (!philo->death || (msg[0] == 'd' && !philo->death_printed))
 	{
 		if (msg[0] == 'd')
 		{
@@ -40,7 +39,7 @@ char *msg, t_philo *philo)
 		ft_putstr("\n");
 	}
 	if (msg[0] != 'd')
-	sem_post(write_lock);
+		sem_post(write_lock);
 }
 
 long		get_time_diff(struct timeval start, sem_t *time_lock)

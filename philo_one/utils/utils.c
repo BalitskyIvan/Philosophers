@@ -26,6 +26,20 @@ void		ft_putstr(char *s)
 	}
 }
 
+t_philo		**print_error(int id)
+{
+	ft_putstr(RED);
+	ft_putstr("Error\n");
+	if (id == 1)
+		ft_putstr("Not a valid arguments, sorry :(\n");
+	if (id == 2)
+		ft_putstr("Something went wrong with mutex init, sorry :(\n");
+	if (id == 3)
+		ft_putstr("Something went wrong with threads init, sorry :(\n");
+	ft_putstr(RESET);
+	return (NULL);
+}
+
 static int	to_skip_symbols(const char *str)
 {
 	int	i;

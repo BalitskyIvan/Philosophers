@@ -47,7 +47,8 @@ void	*philosopher(void *philo_struct)
 
 	philo = (t_philo *)philo_struct;
 	forks = get_mutex_id(philo->id, philo->philosophers_count);
-	pthread_create(&death_thread, NULL, death_catcher, philo);
+	if (pthread_create(&death_thread, NULL, death_catcher, philo) != 0)
+		return (NULL);
 	while (1)
 	{
 		if (thinking_move(philo))
@@ -68,11 +69,12 @@ void	*philosopher(void *philo_struct)
 
 int		main(int argc, char **argv)
 {
-	t_vars	philo_struct;
+	t_vars		philo_struct;
+	t_global	global;
 
-	philo_struct = init(argc, argv, philosopher);
+	philo_struct = init(argc, argv, philosopher, &global);
 	if (philo_struct.philo_count == -1)
 		return (0);
-	detach(&philo_struct);
+	detach(&philo_struct, &global);
 	return (0);
 }
