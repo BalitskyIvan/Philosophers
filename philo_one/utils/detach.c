@@ -39,7 +39,7 @@ void	detach_mutex(pthread_mutex_t *mutex, int size)
 	int	i;
 
 	i = 0;
-	while (i <= size)
+	while (i < size)
 	{
 		pthread_mutex_destroy(&mutex[i]);
 		i++;
@@ -52,7 +52,7 @@ void	free_philo(t_philo **philo, int size)
 	int	i;
 
 	i = 0;
-	while (i <= size)
+	while (i < size)
 	{
 		free(philo[i]);
 		i++;
@@ -64,6 +64,6 @@ void	detach(t_vars *philo_struct, t_global *global)
 {
 	pthread_mutex_destroy(&philo_struct->get_time_mutex);
 	detach_threads(philo_struct->thread_id, philo_struct->philo_count);
-	detach_mutex(philo_struct->mutex, philo_struct->philo_count);
+	detach_mutex(philo_struct->mutex, philo_struct->philo_count + 1);
 	free_philo(global->philo, philo_struct->philo_count);
 }

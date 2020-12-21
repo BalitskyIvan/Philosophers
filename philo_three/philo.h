@@ -76,5 +76,7 @@ int					thinking_move(t_philo *philo);
 void				print_log(sem_t *mutex, char *color, char *msg,
 t_philo *philo);
 void				wait_process_end(t_vars *philo_struct);
+int					print_error(int id);
+void				detach_philos(t_vars *philo_struct, int size);
 
 #endif

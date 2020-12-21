@@ -27,8 +27,33 @@ static int		n_size(long n, int isminus)
 	return (i);
 }
 
-static char		*to_char(char *res, int i, long n, int size)
+static char		*dup_str(int is)
 {
+	char *res;
+
+	if (is)
+	{
+		res = malloc(sizeof(char) * 11);
+		res = "-2147483648";
+		return (res);
+	}
+	else
+	{
+		res = malloc(sizeof(char) * 2);
+		res[0] = '0';
+		res[1] = '\0';
+		return (res);
+	}
+}
+
+static char		*to_char(int isminus, int i, long n, int size)
+{
+	char *res;
+
+	if (!(res = malloc((n_size(n, isminus) + 1) * sizeof(char))))
+		return (NULL);
+	if (isminus == 1)
+		res[0] = '-';
 	res[i + size] = '\0';
 	while (n > 0)
 	{
@@ -41,15 +66,14 @@ static char		*to_char(char *res, int i, long n, int size)
 
 char			*ft_itoa(long n)
 {
-	char	*res;
 	int		i;
 	int		isminus;
 
 	i = 0;
 	if (n == -2147483648)
-		return ("-2147483648");
+		return (dup_str(1));
 	if (n == 0)
-		return ("0");
+		return (dup_str(0));
 	isminus = 0;
 	if (n < 0)
 	{
@@ -57,9 +81,5 @@ char			*ft_itoa(long n)
 		isminus = 1;
 		n *= -1;
 	}
-	if (!(res = (char *)malloc((n_size(n, isminus) + 1) * sizeof(char))))
-		return (NULL);
-	if (isminus == 1)
-		res[0] = '-';
-	return (to_char(res, i, n, n_size(n, 0)));
+	return (to_char(isminus, i, n, n_size(n, 0)));
 }

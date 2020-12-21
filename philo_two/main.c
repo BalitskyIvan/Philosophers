@@ -44,8 +44,10 @@ void	*philosopher(void *philo_struct)
 {
 	t_philo			*philo;
 	pthread_t		death_thread;
+	char			*id_s;
 
 	philo = (t_philo *)philo_struct;
+	id_s = ft_itoa(philo->id);
 	pthread_create(&death_thread, NULL, death_catcher, philo);
 	while (1)
 	{
@@ -62,17 +64,18 @@ void	*philosopher(void *philo_struct)
 	}
 	pthread_join(death_thread, NULL);
 	sem_close(philo->eat_lock);
-	sem_unlink(ft_itoa(philo->id));
+	sem_unlink(id_s);
 	return (NULL);
 }
 
 int		main(int argc, char **argv)
 {
-	t_vars	philo_struct;
+	t_vars		philo_struct;
+	t_global	global;
 
-	philo_struct = init(argc, argv, philosopher);
+	philo_struct = init(argc, argv, philosopher, &global);
 	if (philo_struct.philo_count == -1)
 		return (0);
-	detach(&philo_struct);
+	detach(&philo_struct, &global);
 	return (0);
 }

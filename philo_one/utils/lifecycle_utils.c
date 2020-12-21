@@ -12,6 +12,13 @@
 
 #include "../philo.h"
 
+static void	unlock_mutex(pthread_mutex_t *mutex, char *id, char *timestamp_s)
+{
+	pthread_mutex_unlock(mutex);
+	free(id);
+	free(timestamp_s);
+}
+
 void		print_log(pthread_mutex_t *mutex, char *color,
 char *msg, t_philo *philo)
 {
@@ -39,7 +46,7 @@ char *msg, t_philo *philo)
 		ft_putstr(RESET);
 		ft_putstr("\n");
 	}
-	pthread_mutex_unlock(mutex);
+	unlock_mutex(mutex, id, timestamp_s);
 }
 
 long		get_time_diff(struct timeval start, pthread_mutex_t *mutex)
@@ -79,11 +86,11 @@ t_forks		get_mutex_id(int id, int philosophers_count)
 	}
 	else
 	{
-		forks.first = id - 1;
 		if (id == philosophers_count)
 			forks.second = 0;
 		else
 			forks.second = id;
+		forks.first = id - 1;
 	}
 	return (forks);
 }

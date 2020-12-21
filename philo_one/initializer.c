@@ -32,14 +32,15 @@ static pthread_mutex_t	*init_mutex(int philosophers_count)
 	return (mutex);
 }
 
-static t_philo				**init_philosophers(int philosophers_count,
+static t_philo			**init_philosophers(int philosophers_count,
 t_vars *philo_struct, void *philosopher, t_philo philo_set)
 {
 	int				i;
 	t_philo			**philo;
 
 	i = 0;
-	if (!(philo_struct->thread_id = malloc(sizeof(pthread_t) * philosophers_count)))
+	if (!(philo_struct->thread_id = malloc(sizeof(pthread_t) *
+	philosophers_count)))
 		return (NULL);
 	if (!(philo = malloc(sizeof(t_philo*) * philosophers_count)))
 	{
@@ -51,7 +52,8 @@ t_vars *philo_struct, void *philosopher, t_philo philo_set)
 	{
 		if (!(philo[i] = philo_dup(philo_set, i, philo_struct)))
 			return (detach_set(philo_struct, philo_set, philo, i));
-		if (pthread_create(&philo_struct->thread_id[i], NULL, philosopher, philo) != 0)
+		if (pthread_create(&philo_struct->thread_id[i], NULL,
+		philosopher, philo[i]) != 0)
 			return (detach_set(philo_struct, philo_set, philo, i));
 		i++;
 	}
@@ -63,7 +65,7 @@ static int				parse_args(t_philo *philo, char **argv, int argc)
 	philo->id = 0;
 	if ((philo->philosophers_count = ft_atoi(argv[1])) < 1)
 		return (0);
-	if((philo->time_to_die = ft_atoi(argv[2])) < 1)
+	if ((philo->time_to_die = ft_atoi(argv[2])) < 1)
 		return (0);
 	if ((philo->time_to_eat = ft_atoi(argv[3])) < 1)
 		return (0);
@@ -80,8 +82,8 @@ static int				parse_args(t_philo *philo, char **argv, int argc)
 	return (1);
 }
 
-static t_philo			**parse_vars(int argc, char **argv, void *philosopher,
-t_vars *philo_struct)
+static t_philo			**parse_vars(int argc, char **argv,
+void *philosopher, t_vars *philo_struct)
 {
 	t_philo philo;
 	t_philo **philos;
@@ -98,17 +100,16 @@ t_vars *philo_struct)
 		philo_struct->philo_count = philo.philosophers_count;
 		philo_struct->death = 0;
 		philo_struct->is_death_printed = 0;
-		if (!(philos = init_philosophers(philo.philosophers_count, philo_struct,
-		philosopher, philo)))
+		if (!(philos = init_philosophers(philo.philosophers_count,
+		philo_struct, philosopher, philo)))
 			return (print_error(3));
 		return (philos);
 	}
-	else
-		ft_putstr("Wrong number of arguments, sorry :(\n");
-	return (NULL);
+	return (print_error(4));
 }
 
-t_vars					init(int argc, char **argv, void *philosopher, t_global *global)
+t_vars					init(int argc, char **argv,
+void *philosopher, t_global *global)
 {
 	t_vars	philo_struct;
 

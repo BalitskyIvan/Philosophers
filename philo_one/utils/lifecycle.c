@@ -31,11 +31,11 @@ int	fork_move(t_philo *philo, int fork_id, int is_first_fork)
 			if (is_first_fork)
 				print_log(&philo->mutex[philo->philosophers_count],
 				YEL,
-				"has taken a second fork", philo);
+				"has taken a first fork", philo);
 			else
 				print_log(&philo->mutex[philo->philosophers_count],
 				YEL,
-				"has taken a first fork", philo);
+				"has taken a second fork", philo);
 		}
 	}
 	return (philo->vars->death);
@@ -53,9 +53,9 @@ int	eating_move(t_philo *philo, t_forks forks)
 		philo->eat_num++;
 		pthread_mutex_lock(&philo->eat_lock);
 		sleep_for(philo->time_to_eat, &philo->vars->get_time_mutex);
-		pthread_mutex_unlock(&philo->eat_lock);
 		pthread_mutex_unlock(&philo->mutex[forks.first]);
 		pthread_mutex_unlock(&philo->mutex[forks.second]);
+		pthread_mutex_unlock(&philo->eat_lock);
 	}
 	return (philo->vars->death);
 }

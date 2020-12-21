@@ -12,20 +12,28 @@
 
 #include "../philo.h"
 
-static void	detach_threads(t_vars *philo_struct)
+t_philo	**detach_set(t_vars *philo_struct,
+t_philo **philo, int i)
+{
+	free_philo(philo, i);
+	detach_threads(philo_struct->thread_id, i);
+	return (NULL);
+}
+
+void	detach_threads(pthread_t *thread_id, int size)
 {
 	int	i;
 
 	i = 0;
-	while (i < philo_struct->philo_count)
+	while (i < size)
 	{
-		pthread_join(philo_struct->thread_id[i], NULL);
+		pthread_join(thread_id[i], NULL);
 		i++;
 	}
-	free(philo_struct->thread_id);
+	free(thread_id);
 }
 
-static void	detach_mutex(t_vars *philo_struct)
+void	detach_mutex(t_vars *philo_struct)
 {
 	sem_close(philo_struct->semaphore);
 	sem_close(philo_struct->waiter);
@@ -37,8 +45,22 @@ static void	detach_mutex(t_vars *philo_struct)
 	sem_unlink("write_lock");
 }
 
-void		detach(t_vars *philo_struct)
+void	free_philo(t_philo **philo, int size)
 {
-	detach_threads(philo_struct);
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		free(philo[i]);
+		i++;
+	}
+	free(philo);
+}
+
+void	detach(t_vars *philo_struct, t_global *global)
+{
+	detach_threads(philo_struct->thread_id, philo_struct->philo_count);
 	detach_mutex(philo_struct);
+	free_philo(global->philo, philo_struct->philo_count);
 }

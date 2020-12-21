@@ -41,11 +41,30 @@ static int	to_skip_symbols(const char *str)
 	return (i);
 }
 
+int			print_error(int id)
+{
+	ft_putstr(RED);
+	ft_putstr("Error\n");
+	if (id == 1)
+		ft_putstr("Not a valid arguments, sorry :(\n");
+	if (id == 2)
+		ft_putstr("Something went wrong with mutex init, sorry :(\n");
+	if (id == 3)
+		ft_putstr("Something went wrong with threads init, sorry :(\n");
+	if (id == 4)
+		ft_putstr("Wrong number of arguments, sorry :(\n");
+	ft_putstr(RESET);
+	return (-1);
+}
+
 t_philo		*philo_dup(t_philo philo_struct, int id, t_vars *vars)
 {
 	t_philo	*new;
+	char	*id_s;
 
-	new = malloc(sizeof(t_philo));
+	id_s = ft_itoa(id);
+	if (!(new = malloc(sizeof(t_philo))))
+		return (NULL);
 	new->id = id;
 	new->eat_num = 0;
 	new->waiter = vars->waiter;
@@ -59,8 +78,9 @@ t_philo		*philo_dup(t_philo philo_struct, int id, t_vars *vars)
 	new->time_to_sleep = philo_struct.time_to_sleep;
 	gettimeofday(&new->started_at, NULL);
 	gettimeofday(&new->last_eat, NULL);
-	sem_unlink(ft_itoa(id));
-	new->eat_lock = sem_open(ft_itoa(id), O_CREAT, 0660, 1);
+	sem_unlink(id_s);
+	new->eat_lock = sem_open(id_s, O_CREAT, 0660, 1);
+	free(id_s);
 	return (new);
 }
 

@@ -21,10 +21,10 @@ void	*death_catcher(void *philo_struct)
 	philo = (t_philo *)philo_struct;
 	while (!philo->vars->death)
 	{
-		pthread_mutex_lock(&philo->eat_lock);
 		if (get_time_diff(philo->last_eat, &philo->vars->get_time_mutex) >
 		philo->time_to_die || philo->eat_num == philo->number_must_eat)
 		{
+			pthread_mutex_lock(&philo->eat_lock);
 			philo->vars->death = 1;
 			print_log(&philo->mutex[philo->philosophers_count],
 				RED, "died", philo);
@@ -34,8 +34,8 @@ void	*death_catcher(void *philo_struct)
 				i++;
 			}
 		}
-		pthread_mutex_unlock(&philo->eat_lock);
 	}
+	pthread_mutex_unlock(&philo->eat_lock);
 	return (NULL);
 }
 
@@ -47,8 +47,7 @@ void	*philosopher(void *philo_struct)
 
 	philo = (t_philo *)philo_struct;
 	forks = get_mutex_id(philo->id, philo->philosophers_count);
-	if (pthread_create(&death_thread, NULL, death_catcher, philo) != 0)
-		return (NULL);
+	pthread_create(&death_thread, NULL, death_catcher, philo_struct);
 	while (1)
 	{
 		if (thinking_move(philo))

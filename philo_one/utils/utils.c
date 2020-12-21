@@ -36,6 +36,8 @@ t_philo		**print_error(int id)
 		ft_putstr("Something went wrong with mutex init, sorry :(\n");
 	if (id == 3)
 		ft_putstr("Something went wrong with threads init, sorry :(\n");
+	if (id == 4)
+		ft_putstr("Wrong number of arguments, sorry :(\n");
 	ft_putstr(RESET);
 	return (NULL);
 }

@@ -12,6 +12,13 @@
 
 #include "../philo.h"
 
+static void	unlock_mutex(sem_t *write_lock, char *id, char *timestamp_s)
+{
+	sem_post(write_lock);
+	free(id);
+	free(timestamp_s);
+}
+
 void		print_log(sem_t *write_lock, char *color,
 char *msg, t_philo *philo)
 {
@@ -39,7 +46,7 @@ char *msg, t_philo *philo)
 		ft_putstr(RESET);
 		ft_putstr("\n");
 	}
-	sem_post(write_lock);
+	unlock_mutex(write_lock, id, timestamp_s);
 }
 
 long		get_time_diff(struct timeval start, sem_t *time_lock)

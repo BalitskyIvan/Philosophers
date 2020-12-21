@@ -42,7 +42,11 @@ void		*death_catcher(void *philo_struct)
 
 static void	philosopher_process(t_philo *philo)
 {
-	pthread_create(&philo->death_thread, NULL, death_catcher, philo);
+	char *id_s;
+
+	id_s = ft_itoa(philo->id);
+	if (pthread_create(&philo->death_thread, NULL, death_catcher, philo) != 0)
+		exit(0);
 	while (1)
 	{
 		if (thinking_move(philo))
@@ -57,7 +61,8 @@ static void	philosopher_process(t_philo *philo)
 			break ;
 	}
 	sem_post(philo->eat_lock);
-	sem_unlink(ft_itoa(philo->id));
+	sem_unlink(id_s);
+	free(id_s);
 	pthread_join(philo->death_thread, NULL);
 	exit(0);
 }
@@ -70,7 +75,7 @@ int			main(int argc, char **argv)
 	i = 0;
 	philo_struct = init(argc, argv);
 	if (philo_struct.philo_count == -1)
-		return (0);
+		exit(0);
 	while (i < philo_struct.philo_count)
 	{
 		if ((philo_struct.philos[i]->philo_process = fork()) == 0)
@@ -79,5 +84,5 @@ int			main(int argc, char **argv)
 	}
 	wait_process_end(&philo_struct);
 	detach(&philo_struct);
-	return (0);
+	exit(0);
 }

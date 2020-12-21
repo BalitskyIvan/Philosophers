@@ -24,12 +24,12 @@ static void	detach_mutex(t_vars *philo_struct)
 	sem_unlink("write_lock");
 }
 
-static void	detach_philos(t_vars *philo_struct)
+void		detach_philos(t_vars *philo_struct, int size)
 {
 	int	i;
 
 	i = 0;
-	while (i < philo_struct->philo_count)
+	while (i < size)
 	{
 		sem_unlink(ft_itoa(philo_struct->philos[i]->id));
 		free(philo_struct->philos[i]);
@@ -55,4 +55,5 @@ void		detach(t_vars *philo_struct)
 {
 	sem_post(philo_struct->write_lock);
 	detach_mutex(philo_struct);
+	detach_philos(philo_struct, philo_struct->philo_count);
 }

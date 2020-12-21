@@ -26,7 +26,6 @@
 # define BLU "\x1B[34m"
 # define MAG "\x1B[35m"
 
-
 typedef struct		s_vars
 {
 	pthread_t		*thread_id;
@@ -65,7 +64,8 @@ typedef struct		s_global
 	t_philo			**philo;
 }					t_global;
 
-t_vars				init(int argc, char **argv, void *philosopher, t_global *global);
+t_vars				init(int argc, char **argv, void *philosopher,
+t_global *global);
 int					ft_atoi(const char *str);
 void				ft_putstr(char *s);
 void				detach(t_vars *philo_struct, t_global *global);
