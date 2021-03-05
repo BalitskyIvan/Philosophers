@@ -17,12 +17,16 @@ static int	init_semaphore(int philosophers_count, t_vars *vars)
 	sem_unlink("semaphore");
 	sem_unlink("waiter");
 	sem_unlink("time_lock");
+	sem_unlink("kill_lock");
 	sem_unlink("write_lock");
 	if ((vars->semaphore =
 	sem_open("semaphore", O_CREAT, 0660, philosophers_count)) == SEM_FAILED)
 		return (0);
 	if ((vars->waiter =
 	sem_open("waiter", O_CREAT, 0660, 1)) == SEM_FAILED)
+		return (0);
+	if ((vars->kill_lock =
+	sem_open("kill_lock", O_CREAT, 0660, 1)) == SEM_FAILED)
 		return (0);
 	if ((vars->time_lock =
 	sem_open("time_lock", O_CREAT, 0660, 1)) == SEM_FAILED)

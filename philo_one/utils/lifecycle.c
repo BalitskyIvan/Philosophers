@@ -21,22 +21,13 @@ int	thinking_move(t_philo *philo)
 	return (philo->vars->death);
 }
 
-int	fork_move(t_philo *philo, int fork_id, int is_first_fork)
+int	fork_move(t_philo *philo, int fork_id)
 {
 	if (!philo->vars->death)
 	{
 		pthread_mutex_lock(&philo->mutex[fork_id]);
-		if (!philo->vars->death)
-		{
-			if (is_first_fork)
-				print_log(&philo->mutex[philo->philosophers_count],
-				YEL,
-				"has taken a first fork", philo);
-			else
-				print_log(&philo->mutex[philo->philosophers_count],
-				YEL,
-				"has taken a second fork", philo);
-		}
+		print_log(&philo->mutex[philo->philosophers_count], YEL,
+		"has taken a fork", philo);
 	}
 	return (philo->vars->death);
 }
@@ -56,6 +47,8 @@ int	eating_move(t_philo *philo, t_forks forks)
 		pthread_mutex_unlock(&philo->mutex[forks.first]);
 		pthread_mutex_unlock(&philo->mutex[forks.second]);
 		pthread_mutex_unlock(&philo->eat_lock);
+		if (philo->eat_num == philo->number_must_eat)
+			return (1);
 	}
 	return (philo->vars->death);
 }

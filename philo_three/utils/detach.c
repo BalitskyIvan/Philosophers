@@ -18,10 +18,12 @@ static void	detach_mutex(t_vars *philo_struct)
 	sem_close(philo_struct->waiter);
 	sem_close(philo_struct->time_lock);
 	sem_close(philo_struct->write_lock);
+	sem_close(philo_struct->kill_lock);
 	sem_unlink("semaphore");
 	sem_unlink("waiter");
 	sem_unlink("time_lock");
 	sem_unlink("write_lock");
+	sem_unlink("kill_lock");
 }
 
 void		detach_philos(t_vars *philo_struct, int size)
@@ -36,19 +38,6 @@ void		detach_philos(t_vars *philo_struct, int size)
 		i++;
 	}
 	free(philo_struct->philos);
-}
-
-void		wait_process_end(t_vars *philo_struct)
-{
-	int	i;
-
-	waitpid(-1, 0, 0);
-	i = 0;
-	while (i < philo_struct->philo_count)
-	{
-		kill(philo_struct->philos[i]->philo_process, SIGKILL);
-		i++;
-	}
 }
 
 void		detach(t_vars *philo_struct)

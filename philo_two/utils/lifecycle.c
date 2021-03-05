@@ -28,15 +28,8 @@ int	fork_move(t_philo *philo, int is_first_fork)
 		if (is_first_fork)
 			sem_wait(philo->waiter);
 		sem_wait(philo->semaphore);
-		if (!philo->vars->death)
-		{
-			if (is_first_fork)
-				print_log(philo->vars->write_lock, YEL,
-				"has taken a second fork", philo);
-			else
-				print_log(philo->vars->write_lock, YEL,
-				"has taken a first fork", philo);
-		}
+		print_log(philo->vars->write_lock, YEL,
+			"has taken a fork", philo);
 	}
 	return (philo->vars->death);
 }
@@ -57,6 +50,8 @@ int	eating_move(t_philo *philo)
 		sem_post(philo->eat_lock);
 		sem_post(philo->semaphore);
 		sem_post(philo->semaphore);
+		if (philo->eat_num == philo->number_must_eat)
+			return (1);
 	}
 	return (philo->vars->death);
 }

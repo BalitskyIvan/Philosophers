@@ -76,7 +76,7 @@ t_forks				get_mutex_id(int id, int philosophers_count);
 void				sleep_for(long on_time, pthread_mutex_t *mutex);
 int					sleeping_move(t_philo *philo);
 int					eating_move(t_philo *philo, t_forks forks);
-int					fork_move(t_philo *philo, int fork_id, int is_first_fork);
+int					fork_move(t_philo *philo, int fork_id);
 int					thinking_move(t_philo *philo);
 void				print_log(pthread_mutex_t *mutex, char *color, char *msg,
 t_philo *philo);

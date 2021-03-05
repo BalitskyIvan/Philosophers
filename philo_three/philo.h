@@ -57,6 +57,7 @@ typedef struct		s_vars
 	sem_t			*waiter;
 	sem_t			*time_lock;
 	sem_t			*write_lock;
+	sem_t			*kill_lock;
 	t_philo			**philos;
 	int				philo_count;
 }					t_vars;
@@ -73,7 +74,7 @@ int					sleeping_move(t_philo *philo);
 int					eating_move(t_philo *philo);
 int					fork_move(t_philo *philo, int is_first_fork);
 int					thinking_move(t_philo *philo);
-void				print_log(sem_t *mutex, char *color, char *msg,
+int					print_log(sem_t *mutex, char *color, char *msg,
 t_philo *philo);
 void				wait_process_end(t_vars *philo_struct);
 int					print_error(int id);

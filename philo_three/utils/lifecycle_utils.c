@@ -12,16 +12,29 @@
 
 #include "../philo.h"
 
-static void	unlock_mutex(sem_t *write_lock, char *msg,
+static int	unlock_mutex(sem_t *write_lock, char *msg,
 char *id, char *timestamp_s)
 {
 	if (msg[0] != 'd')
 		sem_post(write_lock);
 	free(id);
 	free(timestamp_s);
+	return (1);
 }
 
-void		print_log(sem_t *write_lock, char *color,
+static void	put_msg(char *msg, char *timestamp_s, char *id, char *color)
+{
+	ft_putstr(color);
+	ft_putstr(timestamp_s);
+	ft_putstr(" ");
+	ft_putstr(id);
+	ft_putstr(" ");
+	ft_putstr(msg);
+	ft_putstr(RESET);
+	ft_putstr("\n");
+}
+
+int			print_log(sem_t *write_lock, char *color,
 char *msg, t_philo *philo)
 {
 	char	*id;
@@ -30,6 +43,8 @@ char *msg, t_philo *philo)
 	timestamp_s = ft_itoa(get_time_diff(philo->started_at,
 	philo->time_lock));
 	id = ft_itoa(philo->id + 1);
+	if (philo->death && (msg[0] != 'd' || philo->death_printed))
+		return (0);
 	sem_wait(write_lock);
 	if (!philo->death || (msg[0] == 'd' && !philo->death_printed))
 	{
@@ -38,16 +53,9 @@ char *msg, t_philo *philo)
 			philo->death_printed = 1;
 			philo->death = 1;
 		}
-		ft_putstr(color);
-		ft_putstr(timestamp_s);
-		ft_putstr(" ");
-		ft_putstr(id);
-		ft_putstr(" ");
-		ft_putstr(msg);
-		ft_putstr(RESET);
-		ft_putstr("\n");
+		put_msg(msg, timestamp_s, id, color);
 	}
-	unlock_mutex(write_lock, msg, id, timestamp_s);
+	return (unlock_mutex(write_lock, msg, id, timestamp_s));
 }
 
 long		get_time_diff(struct timeval start, sem_t *time_lock)

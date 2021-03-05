@@ -19,11 +19,11 @@ void	*death_catcher(void *philo_struct)
 
 	i = 0;
 	philo = (t_philo *)philo_struct;
-	while (!philo->vars->death)
+	while (!philo->vars->death && philo->eat_num != philo->number_must_eat)
 	{
 		sem_wait(philo->eat_lock);
 		if (get_time_diff(philo->last_eat, philo->vars->time_lock) >
-		philo->time_to_die || philo->eat_num == philo->number_must_eat)
+		philo->time_to_die)
 		{
 			philo->vars->death = 1;
 			print_log(philo->vars->write_lock,

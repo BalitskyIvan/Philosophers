@@ -19,11 +19,11 @@ void		*death_catcher(void *philo_struct)
 
 	i = 0;
 	philo = (t_philo *)philo_struct;
-	while (!philo->death)
+	while (!philo->death && philo->eat_num != philo->number_must_eat)
 	{
 		sem_wait(philo->eat_lock);
 		if (get_time_diff(philo->last_eat, philo->time_lock) >
-		philo->time_to_die || philo->eat_num == philo->number_must_eat)
+		philo->time_to_die)
 		{
 			philo->death = 1;
 			print_log(philo->write_lock,
@@ -40,11 +40,32 @@ void		*death_catcher(void *philo_struct)
 	return (NULL);
 }
 
-static void	philosopher_process(t_philo *philo)
+static void	die_process(t_vars *philo_struct, t_philo *philo, int id)
 {
-	char *id_s;
+	int	i;
 
-	id_s = ft_itoa(philo->id);
+	i = 0;
+	pthread_join(philo->death_thread, NULL);
+	if (philo->death)
+		sem_post(philo_struct->kill_lock);
+	if (id == philo_struct->philo_count - 1 && philo->number_must_eat != -1)
+	{
+		while (i < philo_struct->philo_count - 1)
+		{
+			waitpid(philo_struct->philos[i]->philo_process, 0, 0);
+			i++;
+		}
+		sem_post(philo_struct->kill_lock);
+	}
+}
+
+static void	philosopher_process(t_vars *philo_struct, int id)
+{
+	char	*id_s;
+	t_philo	*philo;
+
+	philo = philo_struct->philos[id];
+	id_s = ft_itoa(id);
 	if (pthread_create(&philo->death_thread, NULL, death_catcher, philo) != 0)
 		exit(0);
 	while (1)
@@ -63,26 +84,51 @@ static void	philosopher_process(t_philo *philo)
 	sem_post(philo->eat_lock);
 	sem_unlink(id_s);
 	free(id_s);
-	pthread_join(philo->death_thread, NULL);
+	die_process(philo_struct, philo, id);
 	exit(0);
+}
+
+static void	process_create(t_vars philo_struct)
+{
+	int	i;
+
+	i = 0;
+	sem_wait(philo_struct.kill_lock);
+	while (i < philo_struct.philo_count)
+	{
+		if ((philo_struct.philos[i]->philo_process = fork()) == 0)
+			philosopher_process(&philo_struct, i);
+		i++;
+	}
+	sem_wait(philo_struct.kill_lock);
+	waitpid(-1, 0, 0);
+	i = 0;
+	while (i < philo_struct.philo_count)
+	{
+		kill(philo_struct.philos[i]->philo_process, SIGKILL);
+		i++;
+	}
 }
 
 int			main(int argc, char **argv)
 {
 	t_vars	philo_struct;
+	pid_t	main;
 	int		i;
 
-	i = 0;
 	philo_struct = init(argc, argv);
 	if (philo_struct.philo_count == -1)
 		exit(0);
-	while (i < philo_struct.philo_count)
+	i = 0;
+	if ((main = fork()) == 0)
 	{
-		if ((philo_struct.philos[i]->philo_process = fork()) == 0)
-			philosopher_process(philo_struct.philos[i]);
-		i++;
+		process_create(philo_struct);
+		exit(0);
 	}
-	wait_process_end(&philo_struct);
-	detach(&philo_struct);
+	else
+	{
+		waitpid(main, 0, 0);
+		detach(&philo_struct);
+	}
 	exit(0);
 }

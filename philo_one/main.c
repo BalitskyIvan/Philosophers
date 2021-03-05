@@ -19,10 +19,10 @@ void	*death_catcher(void *philo_struct)
 
 	i = 0;
 	philo = (t_philo *)philo_struct;
-	while (!philo->vars->death)
+	while (!philo->vars->death && philo->eat_num != philo->number_must_eat)
 	{
 		if (get_time_diff(philo->last_eat, &philo->vars->get_time_mutex) >
-		philo->time_to_die || philo->eat_num == philo->number_must_eat)
+		philo->time_to_die)
 		{
 			pthread_mutex_lock(&philo->eat_lock);
 			philo->vars->death = 1;
@@ -52,9 +52,9 @@ void	*philosopher(void *philo_struct)
 	{
 		if (thinking_move(philo))
 			break ;
-		if (fork_move(philo, forks.first, 1))
+		if (fork_move(philo, forks.first))
 			break ;
-		if (fork_move(philo, forks.second, 0))
+		if (fork_move(philo, forks.second))
 			break ;
 		if (eating_move(philo, forks))
 			break ;
