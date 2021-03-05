@@ -1,6 +1,7 @@
 # Philosophers
 School 21 project to learn how to work with threads and processes, correctly share data between them. In the task, you need to solve the key multithreading problems: deadlock and simultaneous access to one resource.
 Here is 3 different programs that works with multithreading.
+
 ![alt text](https://miro.medium.com/max/300/1*BUYN2sTbiyT5uyjm0R4OeQ.png)
 
 # Rules
